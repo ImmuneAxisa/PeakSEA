@@ -7,39 +7,43 @@
 psea(gr, rank_col, gr_set, ...)
 }
 \arguments{
-\item{gr}{genomic ranges object with a peak ranking metric in meta data columns to use for enrichment}
+\item{gr}{GRanges object with a peak ranking metric in its metadata
+columns.}
 
-\item{rank_col}{column to use in \code{gr} metadata for ranking}
+\item{rank_col}{Bare column name in \code{gr} metadata to use for ranking peaks.}
 
-\item{gr_set}{a genomic range object listing which range belong to which peak sets in column called "term"}
+\item{gr_set}{GRanges object annotating peak set membership. Must contain
+a metadata column named \code{"term"} that labels each range with its peak set
+identifier.}
 
-\item{...}{passed to \code{plyranges::join_overlap_left}}
+\item{...}{Additional arguments passed to \code{\link[plyranges:overlap-joins]{plyranges::join_overlap_left()}}
+(e.g. \code{maxgap}, \code{minoverlap}).}
 }
 \value{
-\code{gseResults} object
+A \code{gseaResult} object as returned by \code{\link[clusterProfiler:GSEA]{clusterProfiler::GSEA()}}.
 }
 \description{
-Peak-Set Enrichment Analysis (PSEA)
+Rank-based enrichment analysis for genomic peak sets. Peaks in \code{gr} are
+overlapped with annotated peak sets in \code{gr_set} and GSEA is applied to
+identify enriched peak sets.
 }
 \examples{
-
-
+\donttest{
 library(plyranges)
-library(dplyr)
 
 gr <- data.frame(
   seqnames = "chr1",
-  start = seq(0,9999,100),
-  width = 30,
-  ranking_metric = -50:49
-) \%>\%
-  as_granges()
+  start    = seq(1e4, by = 1e3, length.out = 100),
+  width    = 500L,
+  log2FC   = seq(-50, 49)
+) |>
+  plyranges::as_granges()
 
-gr_set <- shift_right(gr, rep_len(c(20,50),100)) \%>\%
-  mutate(term = "peakSet1")
+gr_set <- c(
+  plyranges::shift_right(gr[1:50],  100L) |> plyranges::mutate(term = "peakSet1"),
+  plyranges::shift_right(gr[51:100], 100L) |> plyranges::mutate(term = "peakSet2")
+)
 
-psea(gr, ranking_metric, gr_set)
-
-
-
+psea(gr, log2FC, gr_set)
+}
 }
