@@ -31,3 +31,4 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
+URL: https://immuneaxisa.github.io/PeakSEA/

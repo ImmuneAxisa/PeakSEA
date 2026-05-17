@@ -1,11 +1,11 @@
-url: https://immuneaxisa.github.io/PeakSEA
+url: https://immuneaxisa.github.io/PeakSEA/
 
 template:
   bootstrap: 5
 
 repo:
   url:
-    home:   https://github.com/ImmuneAxisa/PeakSEA
+    home:   https://github.com/ImmuneAxisa/PeakSEA/
     source: https://github.com/ImmuneAxisa/PeakSEA/blob/HEAD/
     issue:  https://github.com/ImmuneAxisa/PeakSEA/issues/
     user:   https://github.com/
@@ -17,7 +17,7 @@ navbar:
   components:
     github:
       icon: fab fa-github
-      href: https://github.com/ImmuneAxisa/PeakSEA
+      href: https://github.com/ImmuneAxisa/PeakSEA/
       aria-label: GitHub
 
 reference:
