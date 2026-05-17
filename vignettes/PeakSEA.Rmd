@@ -1,0 +1,215 @@
+---
+title: "Peak-Set Enrichment Analysis with PeakSEA"
+author:
+  - name: Pierre-Paul Axisa
+package: PeakSEA
+output:
+  rmarkdown::html_vignette:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{Peak-Set Enrichment Analysis with PeakSEA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  message   = FALSE,
+  warning   = FALSE
+)
+library(BiocStyle)
+```
+
+
+# Introduction
+
+## What is PeakSEA?
+
+```{r logo, echo=FALSE, out.width="139px", out.extra='style="float:right; padding:10px"'}
+knitr::include_graphics("../man/figures/logo.png")
+```
+
+Peak-Set Enrichment Analysis (PeakSEA) is a computational method for identifying
+which *peak sets* — collections of genomic regions sharing a biological
+property — are over-represented among peaks that are differentially regulated
+between conditions.
+
+PeakSEA adapts the Gene Set Enrichment Analysis (GSEA) framework
+(Subramanian et al., 2005) to genomic ranges data. The key conceptual
+differences are:
+
+| GSEA | PeakSEA |
+|------|---------|
+| Input: genes ranked by differential expression | Input: peaks ranked by differential accessibility |
+| Gene sets (e.g. GO terms, pathways) | Peak sets (e.g. ATAC peaks, DHS, histone marks) |
+| Membership defined by gene identifier | Membership defined by genomic coordinate overlap |
+
+The approach can for example be applied to chromatin accessibility experiments where
+one wishes to ask: *"Do peaks near binding sites of TF X tend to be more open
+in condition A?"*
+
+## Algorithm overview
+
+```
+Ranked peaks (gr)               Peak set database (gr_set)
+  chr1:1000-1499  log2FC=3.1        chr1:1050-1550  term="CTCF"
+  chr1:2000-2499  log2FC=2.7    ──► chr1:2100-2600  term="CTCF"
+  chr2:500-999    log2FC=-1.2       chr3:800-1300   term="H3K27ac"
+  ...                               ...
+        │
+        │  1. Overlap peaks with peak sets
+        ▼
+  Annotate each peak with the term(s) it overlaps
+        │
+        │  2. Build ranked gene-set input for GSEA
+        ▼
+  TERM2GENE data frame  +  named ranked vector
+        │
+        │  3. Run GSEA (clusterProfiler)
+        ▼
+  gseaResult: NES, p-value, FDR per peak set
+```
+
+# Input data
+
+## Ranked peaks (`gr`)
+
+`gr` must be a `GRanges` object whose metadata contains a *quantitative ranking
+metric*. Common choices:
+
+* `log2FC` from a differential accessibility test (e.g. DESeq2, edgeR)
+* Signed $-\log_{10}(p\text{-value})$
+* Any continuous score where larger values indicate stronger signal in the
+  condition of interest
+
+```{r gr-example}
+library(PeakSEA)
+library(plyranges)
+
+set.seed(1979)
+
+# 100 simulated ATAC-seq peaks with strong signal:
+#   peaks 1–50 are upregulated (positive log2FC)
+#   peaks 51–100 are downregulated (negative log2FC)
+peaks <- data.frame(
+  seqnames = "chr1",
+  start    = seq(1e4, by = 1e3, length.out = 100),
+  width    = 500L,
+  log2FC   = c(seq(5, 0.1, length.out = 50),
+               seq(-0.1, -5, length.out = 50)),
+  padj     = runif(100, 0, 0.05)
+) |>
+  plyranges::as_granges()
+
+peaks
+```
+
+## Peak set database (`gr_set`)
+
+`gr_set` is a `GRanges` object where every range is annotated with a `"term"`
+metadata column naming the peak set it belongs to. This mirrors the TERM2GENE
+format used by `r Biocpkg("clusterProfiler")`.
+
+Peak sets can represent, for example:
+
+* **TF binding sites** from ChIP-seq experiments (ENCODE, ReMap)
+* **Chromatin states** from histone mark ChIP-seq (Roadmap Epigenomics)
+* **DHS clusters** from DNase-seq
+* Any custom collection of genomic intervals
+
+Public databases such as
+[LOLA](http://databio.org/regiondb) and
+[AnnotationHub](https://bioconductor.org/packages/AnnotationHub/)
+provide pre-built region sets that can be used directly as `gr_set`.
+
+For this vignette we create two synthetic peak sets that mimic TF binding
+sites overlapping a known subset of our differential peaks:
+
+```{r gr-set-example}
+# "TF_A" binding sites overlap the upregulated peaks
+# "TF_B" binding sites overlap the downregulated peaks
+set.seed(1979)
+peak_sets <- c(
+  plyranges::shift_right(peaks[sample(1:60, 40)],  100L) |> plyranges::mutate(term = "TF_A"),
+  plyranges::shift_right(peaks[sample(40:100, 40)], 100L) |> plyranges::mutate(term = "TF_B")
+)
+
+peak_sets
+```
+
+# Running PeakSEA
+
+Call `psea()` with the ranked peaks, the name of the ranking column, and the
+peak set database. Additional arguments are forwarded to
+`plyranges::join_overlap_left()` (e.g. `maxgap`, `minoverlap`) to control how
+overlaps between `gr` and `gr_set` are computed.
+
+```{r run-psea}
+result <- psea(peaks, log2FC, peak_sets)
+
+result
+```
+
+The result is a `gseaResult` object. The embedded result table can be accessed
+as a data frame:
+
+```{r result-table}
+knitr::kable(as.data.frame(result)[, c("ID", "NES", "pvalue", "p.adjust")])
+```
+
+**Interpreting the output:**
+
+* **NES > 0**: the peak set is enriched among *upregulated* peaks (top of the
+  ranked list).
+* **NES < 0**: the peak set is enriched among *downregulated* peaks (bottom of
+  the ranked list).
+* **p.adjust**: FDR (Benjamini–Hochberg by default).
+
+As expected, *TF_A* (associated with upregulated peaks) has a positive NES,
+while *TF_B* (associated with downregulated peaks) has a negative NES.
+
+# Visualisation
+
+`r Biocpkg("enrichplot")` provides ready-made plots for `gseaResult` objects.
+
+The enrichment curve for an individual peak set shows how its members are
+distributed across the ranked peak list:
+
+```{r gseaplot, fig.width=7, fig.height=5}
+if (requireNamespace("enrichplot", quietly = TRUE)) {
+  enrichplot::gseaplot2(result, geneSetID = "TF_A", title = "TF_A")
+}
+```
+
+# Building a peak set database from public resources
+
+In a real analysis, `gr_set` is typically built from an external database.
+Below is a minimal sketch using `r Biocpkg("AnnotationHub")`:
+
+```{r annotationhub, eval=FALSE}
+library(AnnotationHub)
+ah <- AnnotationHub()
+
+# Search for ENCODE CTCF ChIP-seq peaks in hg38
+ctcf_hits <- query(ah, c("CTCF", "Homo sapiens", "ENCODE"))
+
+# Download Gm12878 cell line data
+ctcf_gr <- ah[["AH22521"]]
+
+# Annotate with a term column and combine multiple experiments
+ctcf_gr$term <- "CTCF_ENCODE"
+
+# Pass as gr_set
+result <- psea(my_atac_peaks, log2FC, ctcf_gr)
+```
+
+For collections of many peak sets, concatenate individual `GRanges` objects
+with `c()` before passing to `psea()`.
+
+# Session information
+
+```{r sessioninfo}
+sessionInfo()
+```
