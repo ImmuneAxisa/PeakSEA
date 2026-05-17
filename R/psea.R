@@ -38,8 +38,8 @@ utils::globalVariables(c("seqnames", "start", "end", "term", "gene"))
 #'   plyranges::as_granges()
 #'
 #' gr_set <- c(
-#'   plyranges::shift_right(gr[1:50],  100L) |> plyranges::mutate(term = "peakSet1"),
-#'   plyranges::shift_right(gr[51:100], 100L) |> plyranges::mutate(term = "peakSet2")
+#'   shift_right(gr[1:50],  100L) |> mutate(term = "peakSet1"),
+#'   shift_right(gr[51:100], 100L) |> mutate(term = "peakSet2")
 #' )
 #'
 #' psea(gr, log2FC, gr_set)
