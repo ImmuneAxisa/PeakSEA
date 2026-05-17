@@ -2,11 +2,10 @@
 
 export(psea)
 importFrom(clusterProfiler,GSEA)
+importFrom(dplyr,arrange)
 importFrom(dplyr,desc)
 importFrom(dplyr,filter)
-importFrom(dplyr,mutate)
 importFrom(dplyr,select)
-importFrom(magrittr,"%>%")
 importFrom(plyranges,join_overlap_left)
 importFrom(tibble,deframe)
 importFrom(tidyr,unite)
