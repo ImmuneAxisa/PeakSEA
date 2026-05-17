@@ -1,4 +1,4 @@
-Package: PSEA
+Package: PeakSEA
 Title: Peak-set enrichment analysis
 Version: 0.1.0
 Authors@R: 
@@ -15,12 +15,19 @@ Encoding: UTF-8
 ByteCompile: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Depends: 
-    R (>= 4.1),
-    plyranges (>= 1.24.0),
-    clusterProfiler
-Imports: 
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+Depends:
+    R (>= 4.1)
+Imports:
+    clusterProfiler,
     dplyr,
-    magrittr,
+    plyranges (>= 1.24.0),
     tibble,
     tidyr
+Suggests:
+    BiocStyle,
+    enrichplot,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)

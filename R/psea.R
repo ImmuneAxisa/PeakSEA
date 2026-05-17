@@ -2,60 +2,64 @@ utils::globalVariables(c("seqnames", "start", "end", "term", "gene"))
 
 #' Peak-Set Enrichment Analysis (PSEA)
 #'
-#' @param gr genomic ranges object with a peak ranking metric in meta data columns to use for enrichment
-#' @param rank_col column to use in `gr` metadata for ranking
-#' @param gr_set a genomic range object listing which range belong to which peak sets in column called "term"
-#' @param ... passed to `plyranges::join_overlap_left`
+#' Rank-based enrichment analysis for genomic peak sets. Peaks in `gr` are
+#' overlapped with annotated peak sets in `gr_set` and GSEA is applied to
+#' identify enriched peak sets.
 #'
-#' @return `gseResults` object
-#' 
-#' @importFrom dplyr select filter mutate desc
-#' @importFrom magrittr %>%
+#' @param gr      GRanges object with a peak ranking metric in its metadata
+#'   columns.
+#' @param rank_col Bare column name in `gr` metadata to use for ranking peaks.
+#' @param gr_set  GRanges object annotating peak set membership. Must contain
+#'   a metadata column named `"term"` that labels each range with its peak set
+#'   identifier.
+#' @param ...     Additional arguments passed to [plyranges::join_overlap_left()]
+#'   (e.g. `maxgap`, `minoverlap`).
+#'
+#' @return A `gseaResult` object as returned by [clusterProfiler::GSEA()].
+#'
+#' @importFrom dplyr select filter arrange desc
 #' @importFrom plyranges join_overlap_left
 #' @importFrom tidyr unite
 #' @importFrom tibble deframe
 #' @importFrom clusterProfiler GSEA
-#' 
+#'
 #' @export
 #'
 #' @examples
-#' 
-#' 
+#' \donttest{
 #' library(plyranges)
-#' library(dplyr)
-#' 
+#'
 #' gr <- data.frame(
 #'   seqnames = "chr1",
-#'   start = seq(0,9999,100),
-#'   width = 30,
-#'   ranking_metric = -50:49
-#' ) %>%
-#'   as_granges()
-#' 
-#' gr_set <- shift_right(gr, rep_len(c(20,50),100)) %>%
-#'   mutate(term = "peakSet1")
-#' 
-#' psea(gr, ranking_metric, gr_set)
-#' 
-#' 
-#' 
+#'   start    = seq(1e4, by = 1e3, length.out = 100),
+#'   width    = 500L,
+#'   log2FC   = seq(-50, 49)
+#' ) |>
+#'   plyranges::as_granges()
+#'
+#' gr_set <- c(
+#'   plyranges::shift_right(gr[1:50],  100L) |> plyranges::mutate(term = "peakSet1"),
+#'   plyranges::shift_right(gr[51:100], 100L) |> plyranges::mutate(term = "peakSet2")
+#' )
+#'
+#' psea(gr, log2FC, gr_set)
+#' }
 psea <- function(gr, rank_col, gr_set, ...) {
+  rank_col_name <- deparse(substitute(rank_col))
+  validate_psea_inputs(gr, rank_col_name, gr_set)
 
-  
-  peak_sets <- join_overlap_left(gr, gr_set, ...) %>%
-    as.data.frame() %>%
-    tidyr::unite("gene", seqnames, start, end) %>% # confusing but it needs to be named gene for clusterProfiler
-    dplyr::filter(!is.na(term)) %>%
+  peak_sets <- join_overlap_left(gr, gr_set, ...) |>
+    as.data.frame() |>
+    tidyr::unite("gene", seqnames, start, end) |> # needs "gene" column name for clusterProfiler
+    dplyr::filter(!is.na(term)) |>
     dplyr::select(term, gene)
-  
-  ranked_vector <- gr %>%
-    as.data.frame() %>%
-    tidyr::unite("gene", seqnames, start, end) %>%
-    dplyr::select(gene, {{rank_col}}) %>%
-    dplyr::arrange(dplyr::desc({{rank_col}})) %>%
+
+  ranked_vector <- gr |>
+    as.data.frame() |>
+    tidyr::unite("gene", seqnames, start, end) |>
+    dplyr::select(gene, {{ rank_col }}) |>
+    dplyr::arrange(dplyr::desc({{ rank_col }})) |>
     tibble::deframe()
-    
-  
+
   GSEA(ranked_vector, TERM2GENE = peak_sets)
-  
 }
