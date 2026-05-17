@@ -132,8 +132,8 @@ sites overlapping a known subset of our differential peaks:
 # "TF_B" binding sites overlap the downregulated peaks
 set.seed(1979)
 peak_sets <- c(
-  plyranges::shift_right(peaks[sample(1:60, 40)],  100L) |> plyranges::mutate(term = "TF_A"),
-  plyranges::shift_right(peaks[sample(40:100, 40)], 100L) |> plyranges::mutate(term = "TF_B")
+  shift_right(peaks[sample(1:60, 40)],  100L) |> mutate(term = "TF_A"),
+  shift_right(peaks[sample(40:100, 40)], 100L) |> mutate(term = "TF_B")
 )
 
 peak_sets
