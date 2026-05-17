@@ -13,12 +13,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Peak Set Enrichment analysis (PSEA)
+# PeakSEA — Peak-Set Enrichment Analysis <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of PSEA is to test for enrichment in public peak set data using preranked peak data as input.
+The goal of PeakSEA is to test for enrichment in public peak set data using preranked peak data as input. 
+
+NB: I renamed the package from `PSEA` to `PeakSEA` to avoid confusion with other packages.
 
 For example ATACseq peak can be tested with `DiffBind` for differential opening, and ranking metrics, such as log Fold change can be used. We can then test for enrichment in opening (up) or closing (down) with publicly available databases, eg [LOLAcore](https://databio.org/regiondb) for epigenetic annotations or [causalDB](http://www.mulinlab.org/causaldb/) for finemapped credible intervals of disease loci derived from GWAS dataset.
 
@@ -26,21 +28,19 @@ PSEA returns a `gseResult` object that is compatible with `DOSE` package routine
 
 ## Installation
 
-You can install the development version of PSEA from [GitHub](https://github.com/) with:
+You can install the development version of PeakSEA with:
 
 ``` r
 # install.packages("pak")
-pak::pak("ImmuneAxisa/PSEA")
+pak::pak("ImmuneAxisa/PeakSEA")
 # install.packages("devtools")
-devtools::install_github("ImmuneAxisa/PSEA")
+devtools::install_github("ImmuneAxisa/PeakSEA")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
 ```{r example}
-library(PSEA)
+library(PeakSEA)
 library(plyranges)
 library(dplyr)
 

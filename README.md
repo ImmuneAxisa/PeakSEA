@@ -1,13 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Peak Set Enrichment analysis (PSEA)
+# PeakSEA — Peak-Set Enrichment Analysis <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of PSEA is to test for enrichment in public peak set data using
-preranked peak data as input.
+The goal of PeakSEA is to test for enrichment in public peak set data
+using preranked peak data as input.
+
+NB: I renamed the package from `PSEA` to `PeakSEA` to avoid confusion
+with other packages.
 
 For example ATACseq peak can be tested with `DiffBind` for differential
 opening, and ranking metrics, such as log Fold change can be used. We
@@ -22,23 +25,21 @@ routines.
 
 ## Installation
 
-You can install the development version of PSEA from
-[GitHub](https://github.com/) with:
+You can install the development version of PeakSEA with:
 
 ``` r
 # install.packages("pak")
-pak::pak("ImmuneAxisa/PSEA")
+pak::pak("ImmuneAxisa/PeakSEA")
 # install.packages("devtools")
-devtools::install_github("ImmuneAxisa/PSEA")
+devtools::install_github("ImmuneAxisa/PeakSEA")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
 ``` r
-library(PSEA)
-#> Loading required package: plyranges
+library(PeakSEA)
+#> 
+library(plyranges)
 #> Loading required package: BiocGenerics
 #> 
 #> Attaching package: 'BiocGenerics'
@@ -51,9 +52,10 @@ library(PSEA)
 #>     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
 #>     get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
 #>     match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-#>     Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
-#>     tapply, union, unique, unsplit, which.max, which.min
+#>     Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
+#>     table, tapply, union, unique, unsplit, which.max, which.min
 #> Loading required package: IRanges
+#> Warning: package 'IRanges' was built under R version 4.4.2
 #> Loading required package: S4Vectors
 #> Loading required package: stats4
 #> 
@@ -66,6 +68,7 @@ library(PSEA)
 #>     expand.grid, I, unname
 #> Loading required package: GenomicRanges
 #> Loading required package: GenomeInfoDb
+#> Warning: package 'GenomeInfoDb' was built under R version 4.4.2
 #> 
 #> Attaching package: 'plyranges'
 #> The following object is masked from 'package:IRanges':
@@ -74,31 +77,6 @@ library(PSEA)
 #> The following object is masked from 'package:stats':
 #> 
 #>     filter
-#> Loading required package: clusterProfiler
-#> 
-#> clusterProfiler v4.12.6 Learn more at https://yulab-smu.top/contribution-knowledge-mining/
-#> 
-#> Please cite:
-#> 
-#> T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-#> X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-#> enrichment tool for interpreting omics data. The Innovation. 2021,
-#> 2(3):100141
-#> 
-#> Attaching package: 'clusterProfiler'
-#> The following object is masked from 'package:plyranges':
-#> 
-#>     n
-#> The following object is masked from 'package:IRanges':
-#> 
-#>     slice
-#> The following object is masked from 'package:S4Vectors':
-#> 
-#>     rename
-#> The following object is masked from 'package:stats':
-#> 
-#>     filter
-library(plyranges)
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -163,7 +141,5 @@ psea(gr, ranking_metric, gr_set)
 #>  $ p.adjust       : num 
 #>  $ qvalue         : logi 
 #> #...Citation
-#>  T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu.
-#>  clusterProfiler 4.0: A universal enrichment tool for interpreting omics data.
-#>  The Innovation. 2021, 2(3):100141
+#> G Yu. Thirteen years of clusterProfiler. The Innovation. 2024, 5(6):100722
 ```
