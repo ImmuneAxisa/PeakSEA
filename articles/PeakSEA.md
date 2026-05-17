@@ -287,7 +287,7 @@ sessionInfo()
 #> other attached packages:
 #>  [1] plyranges_1.32.0     dplyr_1.2.1          GenomicRanges_1.64.0
 #>  [4] Seqinfo_1.2.0        IRanges_2.46.0       S4Vectors_0.50.1    
-#>  [7] BiocGenerics_0.58.1  generics_0.1.4       PeakSEA_0.1.0       
+#>  [7] BiocGenerics_0.58.1  generics_0.1.4       PeakSEA_0.2.0       
 #> [10] BiocStyle_2.40.0    
 #> 
 #> loaded via a namespace (and not attached):

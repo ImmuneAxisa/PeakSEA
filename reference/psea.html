@@ -11,7 +11,7 @@ identify enriched peak sets."><meta property="og:image" content="https://immunea
 
     <a class="navbar-brand me-2" href="../index.html">PeakSEA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,13 +156,40 @@ identifier.</p></dd>
 <span class="r-in"><span>  <span class="fu">plyranges</span><span class="fu">::</span><span class="fu"><a href="https://tidyomics.github.io/plyranges/reference/ranges-construct.html" class="external-link">as_granges</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">gr_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu">plyranges</span><span class="fu">::</span><span class="fu"><a href="https://tidyomics.github.io/plyranges/reference/ranges-shift.html" class="external-link">shift_right</a></span><span class="op">(</span><span class="va">gr</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>,  <span class="fl">100L</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">plyranges</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"peakSet1"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="fu">plyranges</span><span class="fu">::</span><span class="fu"><a href="https://tidyomics.github.io/plyranges/reference/ranges-shift.html" class="external-link">shift_right</a></span><span class="op">(</span><span class="va">gr</span><span class="op">[</span><span class="fl">51</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>, <span class="fl">100L</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">plyranges</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span>term <span class="op">=</span> <span class="st">"peakSet2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://tidyomics.github.io/plyranges/reference/ranges-shift.html" class="external-link">shift_right</a></span><span class="op">(</span><span class="va">gr</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>,  <span class="fl">100L</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>term <span class="op">=</span> <span class="st">"peakSet1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://tidyomics.github.io/plyranges/reference/ranges-shift.html" class="external-link">shift_right</a></span><span class="op">(</span><span class="va">gr</span><span class="op">[</span><span class="fl">51</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>, <span class="fl">100L</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>term <span class="op">=</span> <span class="st">"peakSet2"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'mutate' is not an exported object from 'namespace:plyranges'</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">psea</span><span class="op">(</span><span class="va">gr</span>, <span class="va">log2FC</span>, <span class="va">gr_set</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'gr_set' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>For some pathways, in reality P-values are less than 1e-10. You can set the eps argument to zero for better estimation.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>qvalue::qvalue() failed, returning NA for qvalue. Error: missing values and NaN's not allowed if 'na.rm' is FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # Gene Set Enrichment Analysis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@organism 	 unknown </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@setType 	 unknown </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@keytype 	 unknown </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@geneList 	 Named int [1:100] 49 48 47 46 45 44 43 42 41 40 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "names")= chr [1:100] "chr1_109000_109499" "chr1_108000_108499" "chr1_107000_107499" "chr1_106000_106499" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...nPerm 	 1000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...pvalues adjusted by 'BH' with cutoff &lt; 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...2 enriched terms found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	2 obs. of  12 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ID             : chr  "peakSet2" "peakSet1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Description    : chr  "peakSet2" "peakSet1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ setSize        : int  50 50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ enrichmentScore: num  1 -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ NES            : num  4.04 -4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue         : num  1e-10 1e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust       : num  1e-10 1e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue         : num  NA NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank           : int  49 51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ leading_edge   : chr  "tags=98%, list=49%, signal=100%" "tags=100%, list=51%, signal=98%"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ core_enrichment: chr  "chr1_109000_109499/chr1_108000_108499/chr1_107000_107499/chr1_106000_106499/chr1_105000_105499/chr1_104000_1044"| __truncated__ "chr1_59000_59499/chr1_58000_58499/chr1_57000_57499/chr1_56000_56499/chr1_55000_55499/chr1_54000_54499/chr1_5300"| __truncated__</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ log2err        : num  NaN NaN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...Citation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang, W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize multiomics data. Nature Protocols. 2024, 19(11):3292-3320 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

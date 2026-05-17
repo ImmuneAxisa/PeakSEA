@@ -118,12 +118,39 @@ gr <- data.frame(
   plyranges::as_granges()
 
 gr_set <- c(
-  plyranges::shift_right(gr[1:50],  100L) |> plyranges::mutate(term = "peakSet1"),
-  plyranges::shift_right(gr[51:100], 100L) |> plyranges::mutate(term = "peakSet2")
+  shift_right(gr[1:50],  100L) |> mutate(term = "peakSet1"),
+  shift_right(gr[51:100], 100L) |> mutate(term = "peakSet2")
 )
-#> Error: 'mutate' is not an exported object from 'namespace:plyranges'
 
 psea(gr, log2FC, gr_set)
-#> Error: object 'gr_set' not found
+#> Warning: For some pathways, in reality P-values are less than 1e-10. You can set the eps argument to zero for better estimation.
+#> Warning: qvalue::qvalue() failed, returning NA for qvalue. Error: missing values and NaN's not allowed if 'na.rm' is FALSE
+#> #
+#> # Gene Set Enrichment Analysis
+#> #
+#> #...@organism     unknown 
+#> #...@setType      unknown 
+#> #...@keytype      unknown 
+#> #...@geneList     Named int [1:100] 49 48 47 46 45 44 43 42 41 40 ...
+#>  - attr(*, "names")= chr [1:100] "chr1_109000_109499" "chr1_108000_108499" "chr1_107000_107499" "chr1_106000_106499" ...
+#> #...nPerm     1000 
+#> #...pvalues adjusted by 'BH' with cutoff < 0.05
+#> #...2 enriched terms found
+#> 'data.frame':    2 obs. of  12 variables:
+#>  $ ID             : chr  "peakSet2" "peakSet1"
+#>  $ Description    : chr  "peakSet2" "peakSet1"
+#>  $ setSize        : int  50 50
+#>  $ enrichmentScore: num  1 -1
+#>  $ NES            : num  4.04 -4
+#>  $ pvalue         : num  1e-10 1e-10
+#>  $ p.adjust       : num  1e-10 1e-10
+#>  $ qvalue         : num  NA NA
+#>  $ rank           : int  49 51
+#>  $ leading_edge   : chr  "tags=98%, list=49%, signal=100%" "tags=100%, list=51%, signal=98%"
+#>  $ core_enrichment: chr  "chr1_109000_109499/chr1_108000_108499/chr1_107000_107499/chr1_106000_106499/chr1_105000_105499/chr1_104000_1044"| __truncated__ "chr1_59000_59499/chr1_58000_58499/chr1_57000_57499/chr1_56000_56499/chr1_55000_55499/chr1_54000_54499/chr1_5300"| __truncated__
+#>  $ log2err        : num  NaN NaN
+#> #...Citation
+#> S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang, W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize multiomics data. Nature Protocols. 2024, 19(11):3292-3320 
+#> 
 # }
 ```
