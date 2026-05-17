@@ -1,0 +1,39 @@
+url: https://immuneaxisa.github.io/PeakSEA
+
+template:
+  bootstrap: 5
+
+repo:
+  url:
+    home:   https://github.com/ImmuneAxisa/PeakSEA
+    source: https://github.com/ImmuneAxisa/PeakSEA/blob/HEAD/
+    issue:  https://github.com/ImmuneAxisa/PeakSEA/issues/
+    user:   https://github.com/
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/ImmuneAxisa/PeakSEA
+      aria-label: GitHub
+
+reference:
+  - title: Core functions
+    desc: >
+      Main functions for Peak-Set Enrichment Analysis.
+    contents:
+      - psea
+
+articles:
+  - title: Getting started
+    navbar: ~
+    contents:
+      - PeakSEA
+
+home:
+  links:
+    - text: Report a bug
+      href: https://github.com/ImmuneAxisa/PeakSEA/issues
